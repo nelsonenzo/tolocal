@@ -1,7 +1,5 @@
 import execa from 'execa';
-import configjson from '../config.json';
 
-// NOTE: i have stored the tunnel.sshport in config.local_tunnels[].sshport
 async function clearTrustedHosts(config, tunnel) {
   const result = await execa('ssh-keygen', ['-R',`${tunnel.full_domain}`]);
   // console.log(`clearTrustedHosts result: ${JSON.stringify(result)}`)

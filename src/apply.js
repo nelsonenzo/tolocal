@@ -15,7 +15,7 @@ async function terraformApply(options) {
 }
 
 // last, but not least, export a function which you call from cli.js.
-export async function create(options) {
+export async function apply(options) {
   console.log("Please be patient. It takes 2-3 minutes to stand up the ec2.")
   await terraformApply(options).catch( err => {console.log(err)})
   console.log("terraform finished applying. Give it 5 minutes before running sudo tolocal up. This lets the ec2, dns, and certbot to resolve.")

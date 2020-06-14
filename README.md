@@ -20,7 +20,7 @@ It queries your aws account as it goes, so it's super simple to select your vpc,
 ## All Commands
 ```
 tolocal config [--dev]
-tolocal create
+tolocal apply
 sudo tolocal up
 tolocal destroy
 tolocal help
@@ -78,10 +78,3 @@ No, an existing route53 dns host zone is required.
 - http is redirected to https
 - https is resolved with Lets Encrypt certbot on ec2 creation.
 
-ssl termination happens via nginx.  no need to terminate https locally, that traffic is secured by an ssh tunnel.
-
-  // subnet_id?: [if_private, will be available on  your internal network through a vpc, and not truly public which may be deisred for some use cases ]
-
-Images by <a href="https://pixabay.com/users/music4life-19559/?utm_source=link-attribution&amp;utm_medium=referral&amp;utm_campaign=image&amp;utm_content=362702">Holger Schué</a> from <a href="https://pixabay.com/?utm_source=link-attribution&amp;utm_medium=referral&amp;utm_campaign=image&amp;utm_content=362702">Pixabay</a>
-and
-<a href="https://pixabay.com/users/hpgruesen-2204343/?utm_source=link-attribution&amp;utm_medium=referral&amp;utm_campaign=image&amp;utm_content=2361968">Erich Westendarp</a> from <a href="https://pixabay.com/?utm_source=link-attribution&amp;utm_medium=referral&amp;utm_campaign=image&amp;utm_content=2361968">Pixabay</a>

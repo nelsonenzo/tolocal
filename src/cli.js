@@ -1,6 +1,6 @@
 import arg from 'arg';
 import { help } from './help';
-import { create } from './create';
+import { apply } from './apply';
 import { config } from './config';
 import { destroy } from './destroy';
 import { up } from './up';
@@ -44,8 +44,8 @@ export async function cli(args) {
         case "config":
             config(options);
             break;
-        case "create":
-            create(options);
+        case "apply":
+            apply(options);
             break;
         case "destroy":
           destroy(options);

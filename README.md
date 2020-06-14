@@ -3,7 +3,7 @@
 reverse proxies https requests from a public domain to your localhost, through an ssh tunnel.
 for example:
 
-https://api.dev.nelsonenzo.com -> localhost:4000
+https://api.dev.yourdomain.com -> localhost:4000
 
 You own the domain, nginx config, and ssh tunnel. It's all yours.
 

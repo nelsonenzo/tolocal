@@ -1,0 +1,5 @@
+create-project/
+node_modules/
+README_TODO.md
+terraform/.terraform
+terraform/terraform.tfvars.json

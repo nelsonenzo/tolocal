@@ -1,7 +1,7 @@
 {
   "name": "tolocal",
-  "version": "0.0.2",
-  "description": "",
+  "version": "0.0.3",
+  "description": "npm cli wraps terraform to create a public facing nginx to localhost reverse proxy.",
   "main": "src/index.js",
   "bin": {
     "@nelsonenzo/tolocal": "bin/tolocal",
@@ -11,7 +11,8 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
-  "author": "",
+  "author": "Nelson Hernandez",
+  "homepage": "https://github.com/nelsonenzo/tolocal",
   "license": "ISC",
   "dependencies": {
     "arg": "^4.1.3",

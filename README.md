@@ -79,8 +79,43 @@ No, an existing route53 dns host zone is required.
 - https is resolved with Lets Encrypt certbot on ec2 creation.
 
 ## Development
+get started
 ```
-npm publish
-npm publish --access public
+git clone git@github.com:nelsonenzo/tolocal.git
+cd tolocal
+npm link
+```
+For the initial config, run
+```
+tolocal config
+```
+Copy terraform.tfvars.json to the github repo terraform/terraform.tfvars.json
+```
+cp $HOME/.tolocal/terraform.tfvars.json ./terraform/terraform.tfvars.json
+```
+You can now edit that local terraform/terraform.tfvars.json file and run:
+```
+tolocal config --dev
+``` 
+This coppies the usual required template files + your json config, and skips prompts.
+It just makes development easier.
 
+You can explore your $HOME/.tolocal directory to see what is created at any time. 
+
+Terraforms state is stored in that directory after `tolocal apply`
+```
+cd ~/.tolocal
+~/.tolocal$ tree
+.
+├── main.tf
+├── terraform.tfstate
+├── terraform.tfstate.backup
+├── terraform.tfvars.json
+└── user_data.sh.tpl
+```
+
+
+if you are an npm collaborator on tolocal
+```
+npm publish --access public
 ```

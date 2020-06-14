@@ -1,5 +1,16 @@
 import execa from 'execa';
+import path from 'path';
+import fs from 'fs';
 
+function readTfvars(options){
+  let vars_file = path.join(options.configDir,'terraform.tfvars.json')
+  if ( fs.existsSync(vars_file) ){
+    var tfvarsString = fs.readFileSync(vars_file,'utf8')
+    return JSON.parse(tfvarsString)
+  } else {
+    throw("~/.tolocal/terraform.tfvars.json file missing \n please run tolocal config")
+  }
+}
 async function clearTrustedHosts(config, tunnel) {
   const result = await execa('ssh-keygen', ['-R',`${tunnel.full_domain}`]);
   // console.log(`clearTrustedHosts result: ${JSON.stringify(result)}`)
@@ -33,14 +44,9 @@ async function tunnelup(config) {
   }
 }
 
-// last, but not least, export a function which you call from cli.js.
 export async function up(options) {
-  // TODO: this command stays open, cntrl+c to close child.
-  //        initiate a timeout of 1 hour.
-  // TODO: record process somehow, and use 'tolocal down' to exit commands.
-  // execa is just a wrapper for https://nodejs.org/api/child_process.html#child_process_child_process_spawn_command_args_options
-  //  stackoverflow: https://stackoverflow.com/questions/25323703/nodejs-execute-command-in-background-and-forget
-    await tunnelup(configjson)
-    console.log("use cntrl+c to close local tunnels. run tolocal destroy to delete infra.");
-    return true;
+  var tfvars = readTfvars(options)
+  await tunnelup(tfvars)
+  console.log("use cntrl+c to close local tunnels. run tolocal destroy to delete infra.");
+  return true;
   }

@@ -46,7 +46,7 @@ the config command will
 
 #### Create the infrastructure in aws
 ```
-tolocal create
+tolocal apply
 ```
 #### Stand up the local ssh tunnels
 This command requires sudo to automatically trust the ec2 instances 
@@ -61,7 +61,7 @@ tolocal destroy
 #### Redeploy
 You don't need to run config if nothing has changed.
 ```
-tolocal create
+tolocal apply
 ## wait a few minutes for https to resolve....
 sudo tolocal up
 ```
@@ -78,3 +78,9 @@ No, an existing route53 dns host zone is required.
 - http is redirected to https
 - https is resolved with Lets Encrypt certbot on ec2 creation.
 
+## Development
+```
+npm publish
+npm publish --access public
+
+```

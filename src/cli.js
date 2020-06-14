@@ -11,12 +11,7 @@ const homedir = os.homedir();
 function parseArgumentsIntoOptions(rawArgs) {
  const args = arg(
    {
-     '--http-only': Boolean,
-     '--config-dir': String,
-     '--auto-approve': Boolean,
      '--dev': Boolean,
-     '-h': '--http-only',
-     '-y': '--auto-approve'
    },
    {
      argv: rawArgs.slice(2),
@@ -24,29 +19,23 @@ function parseArgumentsIntoOptions(rawArgs) {
  );
  return {
     command: args._[0],
-    httpOnly: args['--http-only'] || false,
-    // TODO: correct default get's users home directory + const homedir = require('os').homedir();
     configDir: path.join(homedir,'.tolocal'),
-    autoApprove: args['--auto-approve'] || false,
     isDev: args['--dev'] || false
  };
 }
 
-
-   
 export async function cli(args) {
     let options = parseArgumentsIntoOptions(args);
-    // options = await config(options);
     switch(options.command) {
         case "help":
-            help(options);
-            break;
+          help(options);
+          break;
         case "config":
-            config(options);
-            break;
+          config(options);
+          break;
         case "apply":
-            apply(options);
-            break;
+          apply(options);
+          break;
         case "destroy":
           destroy(options);
           break;
@@ -56,5 +45,4 @@ export async function cli(args) {
         default:
           console.log(`unrecognized command ${options.command}`)
       }
-    // console.log(options);
 }

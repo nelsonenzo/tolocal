@@ -151,7 +151,7 @@ async function promptForMissingOptions(options,tfvars) {
   const raw_hosted_zones = await route53.listHostedZones().promise()
   // console.log(hosted_zones)
   var hosted_zones = raw_hosted_zones.HostedZones.map(zone => {
-    return zone.Name
+    return zone.Name.slice(0, -1);
   })
   var dns_host_zone_default = tfvars.hasOwnProperty('dns_host_zone') ? tfvars.dns_host_zone : ""
   var dns_host_zone = await inquirer.prompt({

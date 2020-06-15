@@ -1,6 +1,6 @@
 {
   "name": "tolocal",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "npm cli wraps terraform to create a public facing nginx to localhost reverse proxy.",
   "main": "src/index.js",
   "bin": {

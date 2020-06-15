@@ -35,7 +35,7 @@ for TUNNEL in $ends; do
       }
       error_page   500 502 503 504  /50x.html;
       location = /50x.html {
-        return 504 "ERROR tolocal host: \$host. It looks like your local ssh tunnels are down. Try 'sudo tolocal up' ";
+        return 504 "ERROR tolocal host: \$host. It looks like your local ssh tunnels are down. Try 'tolocal up' ";
       }
   }
 

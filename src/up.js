@@ -31,8 +31,8 @@ async function addTrustedHosts(config, tunnel) {
 }
 async function openSSHTunnel(config,tunnel) {
  // this intentionally does not await, because it's called in a loop.
-  execa('ssh', ['-i',`${config.ssh_private_key_file_path}`,
-  '-N' ,'-R', `:${tunnel.sshport}:localhost:${tunnel.localport}`, `ubuntu@${tunnel.full_domain}`]);
+  execa('ssh', 
+        ['-i',`${config.ssh_private_key_file_path}`,'-N' ,'-R', `:${tunnel.proxyport}:localhost:${tunnel.localport}`, `ubuntu@${tunnel.full_domain}`])
   return;
 }
 

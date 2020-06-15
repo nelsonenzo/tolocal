@@ -21,7 +21,7 @@ It queries your aws account as it goes, so it's super simple to select your vpc,
 ```
 tolocal config [--dev]
 tolocal apply
-sudo tolocal up
+tolocal up
 tolocal destroy
 tolocal help
 ```
@@ -48,10 +48,14 @@ the config command will
 ```
 tolocal apply
 ```
-#### Stand up the local ssh tunnels
-This command requires sudo to automatically trust the ec2 instances 
+#### Open the ssh tunnels
+This opens an ssh reverse tunel. If you run `ps aux`, you will see it running in the background:
+
+`ssh -i ~/.ssh/private-ssh.key -N -R :8001:localhost:4000 ubuntu@www.dev.yourdomain.com`
+
+This ssh tunnel is how tolocal can securely usher traffic to your http service on localhost.
 ```
-sudo tolocal up
+tolocal up
 ```
 #### Destroy the infra
 To stop paying for the t2.micro (~$8/mo when run 24/7*30) by destroying the infra.
@@ -62,8 +66,7 @@ tolocal destroy
 You don't need to run config if nothing has changed.
 ```
 tolocal apply
-## wait a few minutes for https to resolve....
-sudo tolocal up
+tolocal up
 ```
 
 ## What Get's created?

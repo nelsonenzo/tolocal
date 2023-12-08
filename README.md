@@ -6,12 +6,37 @@ https://api.dev.yourdomain.com -> localhost:4000
 
 It is all deployed in your own AWS cloud.
 
-## What's working
+## Requirements
+- node > v20.0.0
+- terraform > v1.5.7
 
+## Installation & Configuration
+Git clone
 ```
-git clone https://github.com/nelsonenzo/tolocal.git
+git clone git@github.com:nelsonenzo/tolocal.git
+```
+Make tolocal a command
+```
 npm link
 ```
+Configure tolocal using the interactive cli
+```
+tolocal config
+```
+
+## Bring up the AWS infrastructure
+since it's running terraform under the hood, apply like you do terraform
+```
+tolocal apply
+```
+
+## Tunnel your local service
+This will open the SSH tunnel
+```
+tolocal up
+```
+
+
 ### How does it do it?
 tolocal is an npm cli that wraps terraform. 
 
@@ -30,10 +55,7 @@ tolocal up
 tolocal destroy
 tolocal help
 ```
-## Install
-```
-npm i -g tolocal
-```
+
 #### Get Started
 ```
 tolocal config

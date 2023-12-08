@@ -4,8 +4,8 @@
   "description": "npm cli wraps terraform to create a public facing nginx to localhost reverse proxy.",
   "main": "src/index.js",
   "bin": {
-    "@nelsonenzo/tolocal": "bin/tolocal",
-    "tolocal": "bin/tolocal"
+    "@nelsonenzo/tolocal": "bin/tolocal.js",
+    "tolocal": "bin/tolocal.js"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -15,15 +15,21 @@
   "homepage": "https://github.com/nelsonenzo/tolocal",
   "license": "ISC",
   "dependencies": {
+    "@aws-sdk/client-ec2": "^3.468.0",
+    "@aws-sdk/client-route-53": "^3.468.0",
+    "@aws-sdk/credential-providers": "^3.468.0",
     "arg": "^4.1.3",
-    "aws-sdk": "^2.689.0",
+    "axios": "^1.6.2",
     "esm": "^3.2.25",
     "execa": "^2.1.0",
+    "got": "^14.0.0",
     "inquirer": "^7.1.0",
     "ncp": "^2.0.0",
     "path": "^0.12.7",
-    "request": "^2.88.2",
+    "public-ip": "^6.0.1",
     "sudo-prompt": "^9.2.1",
+    "superagent": "^8.1.2",
     "util": "^0.12.3"
-  }
+  },
+  "type": "module"
 }

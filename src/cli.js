@@ -1,9 +1,9 @@
 import arg from 'arg';
-import { help } from './help';
-import { apply } from './apply';
-import { config } from './config';
-import { destroy } from './destroy';
-import { up } from './up';
+import { help } from './help.js';
+import { apply } from './apply.js';
+import { config } from './config.js';
+import { destroy } from './destroy.js';
+import { up } from './up.js';
 import os from 'os';
 import path from 'path';
 const homedir = os.homedir();
@@ -24,7 +24,7 @@ function parseArgumentsIntoOptions(rawArgs) {
  };
 }
 
-export async function cli(args) {
+export default async function cli(args) {
     let options = parseArgumentsIntoOptions(args);
     switch(options.command) {
         case "help":

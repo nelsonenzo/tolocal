@@ -1,12 +1,17 @@
 ## ToLocal
-## What does this do?
-reverse proxies https requests from a public domain to your localhost, through an ssh tunnel.
+Automates AWS to create a revere proxie for HTTPS requests from a public DNS record to your service running on `localhost:port`.
 for example:
 
 https://api.dev.yourdomain.com -> localhost:4000
 
-You own the domain, nginx config, and ssh tunnel. It's all yours.
+It is all deployed in your own AWS cloud.
 
+## What's working
+
+```
+git clone https://github.com/nelsonenzo/tolocal.git
+npm link
+```
 ### How does it do it?
 tolocal is an npm cli that wraps terraform. 
 

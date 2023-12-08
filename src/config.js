@@ -4,9 +4,13 @@ import ncp from 'ncp';
 import { promisify } from 'util';
 const copy = promisify(ncp);
 import execa from 'execa';
-// i think inquirer is when i want to prompt user for more stuff.
 import inquirer from 'inquirer';
-import AWS from 'aws-sdk';
+
+import { fromIni } from '@aws-sdk/credential-providers';
+import { EC2 } from '@aws-sdk/client-ec2';
+import { Route53 } from '@aws-sdk/client-route-53';
+
+import { publicIpv4 } from 'public-ip';
 
 async function tolocalConfigDir(options){
   let dir = options.configDir;
@@ -66,6 +70,8 @@ function readTfvars(options){
   }
 }
 async function promptForMissingOptions(options,tfvars) {
+  var my_ip = await publicIpv4()
+
   ////////////////////////
   // input: aws profile
   ////////////////////////
@@ -76,9 +82,7 @@ async function promptForMissingOptions(options,tfvars) {
     message: 'AWS_PROFILE to use',
     default: aws_profile_default
   })
-  var credentials = new AWS.SharedIniFileCredentials({profile: aws_profile.aws_profile});
-  AWS.config.credentials = credentials;
-
+  var credentials = fromIni({profile: aws_profile.aws_profile});
   ////////////////////////
   // input: aws region
   ////////////////////////
@@ -89,12 +93,15 @@ async function promptForMissingOptions(options,tfvars) {
     message: 'AWS region',
     default: aws_region_default
   })
-  AWS.config.region = aws_region.aws_region
+
   ////////////////////////
   // input: vpc id
   ////////////////////////
-  const ec2 = new AWS.EC2({apiVersion: '2016-11-15'})
-  const raw_vpcs = await ec2.describeVpcs().promise()
+  const ec2 = new EC2({
+    credentials: credentials,
+    region: aws_region.aws_region,
+  })
+  const raw_vpcs = await ec2.describeVpcs([])
   var vpc_ids = raw_vpcs.Vpcs.map(vpc => {
     // console.log({vpc_id: vpc.VpcId, cidr: vpc.CidrBlock, default: vpc.IsDefault})
     return vpc.VpcId
@@ -125,8 +132,9 @@ async function promptForMissingOptions(options,tfvars) {
     }
     ]
   };
-  const raw_subnet_ids = await ec2.describeSubnets(subnet_params).promise()
+  const raw_subnet_ids = await ec2.describeSubnets(subnet_params)
   var subnet_ids = raw_subnet_ids.Subnets.map(subnet => {
+    // TODO: known bug. this breaks if there are no tags.
     var nameTag = subnet.Tags.filter(data => (data.Key == "Name"))
     var name = nameTag.length == 0 ? "" : nameTag[0].Value
     return {
@@ -147,8 +155,11 @@ async function promptForMissingOptions(options,tfvars) {
   ////////////////////////
   // input: hosted zone
   ////////////////////////
-  var route53 = new AWS.Route53({apiVersion: '2013-04-01'});
-  const raw_hosted_zones = await route53.listHostedZones().promise()
+  var route53 = new Route53({
+    credentials: credentials,
+    region: aws_region.aws_region,
+  });
+  const raw_hosted_zones = await route53.listHostedZones()
   // console.log(hosted_zones)
   var hosted_zones = raw_hosted_zones.HostedZones.map(zone => {
     return zone.Name.slice(0, -1);
@@ -226,7 +237,8 @@ var local_tunnels = transform_tunnel_input(local_tunnel_input.local_tunnel_input
     default: ssh_private_key_file_path_default
     });
 
-    ////////////////////////////////////
+  
+  ////////////////////////////////////
   // the final return statement
   ////////////////////////////////////
   return {
@@ -242,7 +254,8 @@ var local_tunnels = transform_tunnel_input(local_tunnel_input.local_tunnel_input
       dns_host_zone: dns_host_zone.dns_host_zone,
       local_tunnels: local_tunnels,
       ssh_public_key_file_path: ssh_public_key_file_path.ssh_public_key_file_path,
-      ssh_private_key_file_path: ssh_private_key_file_path.ssh_private_key_file_path
+      ssh_private_key_file_path: ssh_private_key_file_path.ssh_private_key_file_path,
+      my_ip: `${my_ip}/32`
     }
 
   };

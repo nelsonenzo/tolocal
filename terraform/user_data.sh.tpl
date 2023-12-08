@@ -1,8 +1,6 @@
 #!/bin/bash
-# sudo snap install docker
-sudo add-apt-repository -y ppa:certbot/certbot
 sudo apt-get update
-sudo apt-get install -y nginx certbot python-certbot-nginx
+sudo apt-get install -y nginx certbot python3-certbot-nginx
 
 ends="%{ for tunnel in local_tunnels }
 ${tunnel.full_domain}:${tunnel.proxyport}

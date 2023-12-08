@@ -5,7 +5,6 @@ variable "aws_profile"    { type = string }
 provider "aws" {
   region = var.aws_region
   profile = var.aws_profile
-  version = "~> 2.8"
 }
 variable "vm_size"       { type = string }
 variable "dns_host_zone" { type = string }
@@ -21,6 +20,7 @@ variable "local_tunnels" {
 }
 variable "ssh_public_key_file_path"  { type = string }
 variable "ssh_private_key_file_path" { type = string }
+variable "my_ip" { type = string }
 
 # how to fetch the latest ubuntu ami:
 # https://letslearndevops.com/2018/08/23/terraform-get-latest-centos-ami/
@@ -30,7 +30,7 @@ data "aws_ami" "latest-ubuntu" {
 
   filter {
       name   = "name"
-      values = ["ubuntu/images/hvm-ssd/ubuntu-xenial-16.04-amd64-server-*"]
+      values = ["ubuntu/images/hvm-ssd/ubuntu-focal-20.04-amd64-server-20231025"]
   }
 
   filter {
@@ -64,7 +64,7 @@ resource "aws_security_group" "tolocal_ec2" {
     from_port   = 22
     to_port     = 22
     protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
+    cidr_blocks = [var.my_ip]
   }
 
   egress {

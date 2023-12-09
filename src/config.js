@@ -84,6 +84,7 @@ function readTfvars(options){
     return {}
   }
 }
+
 async function promptForMissingOptions(options,tfvars) {
   var my_ip = await publicIpv4()
 
@@ -175,6 +176,7 @@ async function promptForMissingOptions(options,tfvars) {
     region: aws_region.aws_region,
   });
   const raw_hosted_zones = await route53.listHostedZones()
+  // TODO: handle case when there are no hosted zones.
   // console.log(hosted_zones)
   var hosted_zones = raw_hosted_zones.HostedZones.map(zone => {
     return zone.Name.slice(0, -1);
@@ -252,6 +254,17 @@ var local_tunnels = transform_tunnel_input(local_tunnel_input.local_tunnel_input
     default: ssh_private_key_file_path_default
     });
 
+  // //////////////////////
+  // input: basic auth credentials
+  // //////////////////////
+    const tolocal_auth_default =  tfvars.hasOwnProperty('tolocal_auth') ? tfvars.tolocal_auth : "admin:change-me-please"
+
+    var tolocal_auth =  await inquirer.prompt({
+      type: 'string',
+      name: 'tolocal_auth',
+      message: "please input BASIC Auth in the format of username:password",
+      default: tolocal_auth_default
+      });
 
   ////////////////////////////////////
   // the final return statement
@@ -270,7 +283,8 @@ var local_tunnels = transform_tunnel_input(local_tunnel_input.local_tunnel_input
       local_tunnels: local_tunnels,
       ssh_public_key_file_path: ssh_public_key_file_path.ssh_public_key_file_path,
       ssh_private_key_file_path: ssh_private_key_file_path.ssh_private_key_file_path,
-      my_ip: `${my_ip}/32`
+      my_ip: `${my_ip}/32`,
+      tolocal_auth: tolocal_auth.tolocal_auth
     }
 
   };

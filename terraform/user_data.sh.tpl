@@ -15,7 +15,7 @@ echo $certbot_domains > /verify_certbot_domains
 echo $ends > /verify_ends
 echo "${public_key}" >> /home/ubuntu/.ssh/authorized_keys;
 
-echo "${tolocal_auth}" >> /etc/nginx/tolocalauth
+echo $(echo ${tolocal_auth} | base64 -d) > /etc/nginx/tolocalauth
 
 for TUNNEL in $ends; do
   DOMAIN=$(echo "$TUNNEL" | awk -F ":" '{print $1}')

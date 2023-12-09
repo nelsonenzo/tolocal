@@ -13,6 +13,8 @@ import { Route53 } from '@aws-sdk/client-route-53';
 import { publicIpv4 } from 'public-ip';
 import keygen from 'ssh-keygen';
 
+import md5 from 'apache-md5'
+
 async function tolocalConfigDir(options){
   let dir = options.configDir;
   if (!fs.existsSync(dir)){
@@ -87,6 +89,28 @@ function readTfvars(options){
 
 async function promptForMissingOptions(options,tfvars) {
   var my_ip = await publicIpv4()
+
+  // //////////////////////
+  // input: basic auth credentials
+  // //////////////////////
+  var username_default = tfvars.hasOwnProperty('username') ? tfvars.username : "tolocal"
+  var username = await inquirer.prompt({
+    type: 'input',
+    name: 'username',
+    message: 'Basic Auth Username',
+    default: username_default
+  })
+
+  var password_default = tfvars.hasOwnProperty('password') ? tfvars.password : "tolocal"
+  var passwordTxt = await inquirer.prompt({
+    type: 'input',
+    name: 'password',
+    message: 'Basic Auth Password',
+    default: password_default
+  })
+
+  var password = md5(passwordTxt.password)
+  var tolocal_auth = Buffer.from(`${username.username}:${password}`).toString('base64')
 
   ////////////////////////
   // input: aws profile
@@ -254,18 +278,6 @@ var local_tunnels = transform_tunnel_input(local_tunnel_input.local_tunnel_input
     default: ssh_private_key_file_path_default
     });
 
-  // //////////////////////
-  // input: basic auth credentials
-  // //////////////////////
-    const tolocal_auth_default =  tfvars.hasOwnProperty('tolocal_auth') ? tfvars.tolocal_auth : "admin:change-me-please"
-
-    var tolocal_auth =  await inquirer.prompt({
-      type: 'string',
-      name: 'tolocal_auth',
-      message: "please input BASIC Auth in the format of username:password",
-      default: tolocal_auth_default
-      });
-
   ////////////////////////////////////
   // the final return statement
   ////////////////////////////////////
@@ -284,7 +296,9 @@ var local_tunnels = transform_tunnel_input(local_tunnel_input.local_tunnel_input
       ssh_public_key_file_path: ssh_public_key_file_path.ssh_public_key_file_path,
       ssh_private_key_file_path: ssh_private_key_file_path.ssh_private_key_file_path,
       my_ip: `${my_ip}/32`,
-      tolocal_auth: tolocal_auth.tolocal_auth
+      username: username.username,
+      password: passwordTxt.password,
+      tolocal_auth: tolocal_auth
     }
 
   };

@@ -5,17 +5,13 @@ import { promisify } from 'util';
 const copy = promisify(ncp);
 import execa from 'execa';
 import inquirer from 'inquirer';
-<<<<<<< Updated upstream
 
 import { fromIni } from '@aws-sdk/credential-providers';
 import { EC2 } from '@aws-sdk/client-ec2';
 import { Route53 } from '@aws-sdk/client-route-53';
 
 import { publicIpv4 } from 'public-ip';
-=======
-import AWS from 'aws-sdk';
 import keygen from 'ssh-keygen';
->>>>>>> Stashed changes
 
 async function tolocalConfigDir(options){
   let dir = options.configDir;

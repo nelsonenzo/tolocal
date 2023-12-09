@@ -5,12 +5,17 @@ import { promisify } from 'util';
 const copy = promisify(ncp);
 import execa from 'execa';
 import inquirer from 'inquirer';
+<<<<<<< Updated upstream
 
 import { fromIni } from '@aws-sdk/credential-providers';
 import { EC2 } from '@aws-sdk/client-ec2';
 import { Route53 } from '@aws-sdk/client-route-53';
 
 import { publicIpv4 } from 'public-ip';
+=======
+import AWS from 'aws-sdk';
+import keygen from 'ssh-keygen';
+>>>>>>> Stashed changes
 
 async function tolocalConfigDir(options){
   let dir = options.configDir;
@@ -18,7 +23,20 @@ async function tolocalConfigDir(options){
     fs.mkdirSync(dir);
   }
 }
-async function copyTerraformFiles(options) {  
+async function sshKeyGen(options){
+  let location = path.join(options.configDir,'tolocal_rsa')
+  keygen({
+    location: location,
+    read: true
+  }, function(err, out){
+    if(err) return console.log('config sshKeyGen Failed: '+err);
+    return true;
+    // console.log('Keys created!');
+    // console.log('private key: '+out.key);
+    // console.log('public key: '+out.pubKey);
+  });
+}
+async function copyTerraformFiles(options) {
   const templateDir = path.resolve(
     new URL(import.meta.url).pathname,
     '../../terraform'
@@ -32,8 +50,9 @@ async function copyTerraformFiles(options) {
       clobber: true,
     });
   }
+
 // this coppies the file, but for some reason tfvars will not get read
-// tried using await througought and it had no effect.  
+// tried using await througought and it had no effect.
 // it should already be awaited at the bottom, when this function is called.
 // work around, use --dev flag, then run again without it.
   if (options.isDev) {
@@ -125,7 +144,7 @@ async function promptForMissingOptions(options,tfvars) {
   var subnet_params = {
     Filters: [
       {
-      Name: "vpc-id", 
+      Name: "vpc-id",
       Values: [
         options.vpc_id
       ]
@@ -138,8 +157,8 @@ async function promptForMissingOptions(options,tfvars) {
     var nameTag = subnet.Tags.filter(data => (data.Key == "Name"))
     var name = nameTag.length == 0 ? "" : nameTag[0].Value
     return {
-      name: `name: ${name}, id: ${subnet.SubnetId}, az: ${subnet.AvailabilityZone}, cidr: ${subnet.CidrBlock}`, 
-      value: subnet.SubnetId, 
+      name: `name: ${name}, id: ${subnet.SubnetId}, az: ${subnet.AvailabilityZone}, cidr: ${subnet.CidrBlock}`,
+      value: subnet.SubnetId,
       short: subnet.SubnetId,
       seperator: '|'
     }
@@ -187,7 +206,7 @@ async function promptForMissingOptions(options,tfvars) {
     local_tunnel_input_default = tfvars.local_tunnels.map(tunnel => {
       return `${tunnel.subdomain}=${tunnel.localport}`
     }).join(' ')
-  } 
+  }
 
   var local_tunnel_input = await inquirer.prompt({
                                   type: 'string',
@@ -237,7 +256,7 @@ var local_tunnels = transform_tunnel_input(local_tunnel_input.local_tunnel_input
     default: ssh_private_key_file_path_default
     });
 
-  
+
   ////////////////////////////////////
   // the final return statement
   ////////////////////////////////////
@@ -268,11 +287,11 @@ async function tolocalConfigFile(options) {
     if (err) throw err;
   })
 }
-export async function config(options) {  
+export async function config(options) {
   await tolocalConfigDir(options).catch( (e) => {console.log(e)})
   await copyTerraformFiles(options).catch( (e) => {console.log(e)})
   await terraformInit(options).catch( (e) => {console.log(e)})
-  let tfvars = readTfvars(options)    
+  let tfvars = readTfvars(options)
     // promtForMissingOptions
     // write tfvars file
     // return tfvars.json blob + options
@@ -285,4 +304,4 @@ export async function config(options) {
   // console.log(options)
   console.log("config ran");
   return options;
-} 
+}

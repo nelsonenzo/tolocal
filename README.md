@@ -1,10 +1,9 @@
 ## ToLocal
-Automates AWS to create a revere proxie for HTTPS requests from a public DNS record to your service running on `localhost:port`.
+Automates AWS to create a reverse proxy for HTTPS requests from a public DNS record to your service running on `localhost:port`.
 for example:
 
 https://api.dev.yourdomain.com -> localhost:4000
 
-It is all deployed in your own AWS cloud.
 
 ## Requirements
 - node > v20.0.0

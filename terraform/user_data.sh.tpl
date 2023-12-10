@@ -1,6 +1,7 @@
 #!/bin/bash
 sudo apt-get update
-sudo apt-get install -y nginx certbot python3-certbot-nginx
+
+sudo apt-get install -y nginx certbot python3-certbot-nginx apache2-utils
 
 ends="%{ for tunnel in local_tunnels }
 ${tunnel.full_domain}:${tunnel.proxyport}
@@ -14,10 +15,12 @@ echo $certbot_domains > /verify_certbot_domains
 echo $ends > /verify_ends
 echo "${public_key}" >> /home/ubuntu/.ssh/authorized_keys;
 
+echo $(echo ${tolocal_auth} | base64 -d) > /etc/nginx/tolocalauth
+
 for TUNNEL in $ends; do
   DOMAIN=$(echo "$TUNNEL" | awk -F ":" '{print $1}')
   PROXY_PORT=$(echo "$TUNNEL" | awk -F ":" '{print $2}')
-  
+
   touch /etc/nginx/conf.d/"$DOMAIN".conf
   FILE=/etc/nginx/conf.d/"$DOMAIN".conf
 
@@ -25,8 +28,11 @@ for TUNNEL in $ends; do
   server {
       listen       80;
       server_name  $DOMAIN;
+      auth_basic "tolocal auth";
+      auth_basic_user_file tolocalauth;
 
       location / {
+        auth_basic "tolocal auth";
         proxy_set_header Host            \$host;
         proxy_set_header X-Forwarded-For \$remote_addr;
         proxy_pass http://localhost:$PROXY_PORT;
